@@ -1,0 +1,25 @@
+{
+  "name": "pixi_experiments",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0foo/pixi_experiments.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0foo/pixi_experiments/issues"
+  },
+  "homepage": "https://github.com/0foo/pixi_experiments#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "scripts": {
+    "serve": "http-server . -p 1098 -c-1"
+  }
+}

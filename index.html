@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://pixijs.download/release/pixi.js"></script>
+  </head>
+  <body>
+    <script>
+
+        let app = new PIXI.Application({ width: 640, height: 360 });
+        document.body.appendChild(app.view);
+
+        (async () => {
+            try {
+              const texture_path = '/assets/Robot_Run/spritesheet.png'
+              const texture_data_path = '/assets/Robot_Run/spritesheet.json'
+
+              
+            await PIXI.Assets.load([
+                texture_path,
+                texture_data_path
+            ]);
+
+            spritesheet = new PIXI.Spritesheet(
+                PIXI.BaseTexture.from(texture_path),
+                texture_data_path
+            );
+
+              } 
+            catch(err) {
+              console.error(err)
+            }
+        })()
+
+      </script>
+  </body>
+</html>
+
+
+        // Generate all the Textures asynchronously
+        // await spritesheet.parse();
+
+        // function setup(){
+        //     let sheet = PIXI.Assets.load('assets/Robot_Run/spritesheet.json');
+        //     console.log("tesT")
+        // }
+
+        // PIXI.loader
+        //     .add('static/Foozle_Mohawk_Robot/Robot_Run/spritesheet.json')
+        //     .load(setup);
+
+
+
+                
+
+        //         const sheet = new PIXI.Spritesheet(PIXI.BaseTexture.from(texture), texture_data);
+        //         console.log("loading")
+        //         // await sheet.parse();
+        //         // app.stage.addChild(sheet);
+
+
+                     
+        // const texture = '/assets/Robot_Run/spritesheet.png'
+        //         const texture_data = '/assets/Robot_Run/spritesheet.json'
+
+                
+        //         const spritesheet = new PIXI.Spritesheet(
+        //             PIXI.BaseTexture.from(texture),
+        //             texture_data
+        //         );
+
+        //         // Generate all the Textures asynchronously
+        //         await spritesheet.parse();
+
+  
