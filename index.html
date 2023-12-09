@@ -1,39 +1,33 @@
-<!doctype html>
-<html>
-  <head>
-    <script src="https://pixijs.download/release/pixi.js"></script>
-  </head>
-  <body>
-    <script>
+    <!doctype html>
+    <html>
+      <head>
+        <script src="https://pixijs.download/release/pixi.js"></script>
+      </head>
+      <body>
+        <script>
 
-        let app = new PIXI.Application({ width: 640, height: 360 });
-        document.body.appendChild(app.view);
+            let app = new PIXI.Application({ width: 640, height: 360 });
+            document.body.appendChild(app.view);
 
-        (async () => {
-            try {
-              const texture_path = '/assets/Robot_Run/spritesheet.png'
-              const texture_data_path = '/assets/Robot_Run/spritesheet.json'
+            (async () => {
+                try {
+                  const texture_path = '/assets/Robot_Run/spritesheet.png'
+                  const texture_data_path = '/assets/Robot_Run/spritesheet.json'
 
-              
-            await PIXI.Assets.load([
-                texture_path,
-                texture_data_path
-            ]);
+                spritesheet = new PIXI.Spritesheet(
+                    PIXI.BaseTexture.from(texture_path),
+                    texture_data_path
+                );
+                await spritesheet.parse()
+                  } 
+                catch(err) {
+                  console.error(err)
+                }
+            })()
 
-            spritesheet = new PIXI.Spritesheet(
-                PIXI.BaseTexture.from(texture_path),
-                texture_data_path
-            );
-
-              } 
-            catch(err) {
-              console.error(err)
-            }
-        })()
-
-      </script>
-  </body>
-</html>
+          </script>
+      </body>
+    </html>
 
 
         // Generate all the Textures asynchronously
