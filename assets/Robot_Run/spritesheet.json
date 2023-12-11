@@ -226,6 +226,18 @@
 		"version": "1.0",
 		"image": "spritesheet.png",
 		"format": "RGBA8888",
+		"animations": {
+			"runner": [
+				"Foozlecc_Robot_Run_1.png", 
+				"Foozlecc_Robot_Run_2.png", 
+				"Foozlecc_Robot_Run_3.png", 
+				"Foozlecc_Robot_Run_4.png", 
+				"Foozlecc_Robot_Run_5.png", 
+				"Foozlecc_Robot_Run_6.png",
+				"Foozlecc_Robot_Run_7.png", 
+				"Foozlecc_Robot_Run_8.png", 
+				"Foozlecc_Robot_Run_9.png"
+			]},
 		"size": {
 			"w": 2056,
 			"h": 1542
