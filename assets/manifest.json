@@ -8,6 +8,15 @@
                     "src": "/assets/images/starfield-background-1.jpg"
                 }
             ]
+        },
+        {
+            "name": "player",
+            "assets" : [
+                {
+                    "alias": "player_ship",
+                    "src" : "/assets/images/spaceship_art_pack_larger/blue/small_ship_blue/out.json"
+                }
+            ]
         }
     ]
 }

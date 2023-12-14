@@ -1,3 +1,59 @@
+
+                    await Assets.loadBundle('space_scene');
+
+                    const background = Sprite.from('background');
+                    background.width = app.screen.width * 4;  
+                    background.height = app.screen.height * 4; 
+
+                    const world_container = new Container();
+                    world_container.addChild(background)
+                    app.stage.addChild(world_container);
+                    let camera = new PIXI.Container();
+                    app.stage.addChild(camera);
+
+                    const sheet = await PIXI.Assets.load('/assets/images/spaceship_art_pack_larger/blue/small_ship_blue/out.json')
+                    const ship = new PIXI.AnimatedSprite(sheet.animations.thrustors);
+                    ship.animationSpeed = 0.1666
+                    ship.play()
+                    ship.scale.set(.2, .2)
+                    camera.addChild(ship)
+                    ship.anchor.set(0.5);  // This ensures the sprite is centered based on its middle
+                    ship.x = app.renderer.width / 2;
+                    ship.y = app.renderer.height / 2;
+                    let currentRotation = 0;  // Current rotation of the sprite
+                    let targetRotation = 0;   // Target rotation to reach
+                    const rotationSpeed = 0.1; // Speed of rotation (adjust as needed)
+
+                    function updateTargetRotation() {
+                            if (keyState.ArrowUp && keyState.ArrowRight) {
+                            targetRotation = Math.PI / 4; // Up-Right
+                        } else if (keyState.ArrowUp && keyState.ArrowLeft) {
+                            targetRotation = -Math.PI / 4; // Up-Left
+                        } else if (keyState.ArrowDown && keyState.ArrowRight) {
+                            targetRotation = 3 * Math.PI / 4; // Down-Right
+                        } else if (keyState.ArrowDown && keyState.ArrowLeft) {
+                            targetRotation = -3 * Math.PI / 4; // Down-Left
+                        } else if (keyState.ArrowUp) {
+                            targetRotation = 0; // Up
+                        } else if (keyState.ArrowRight) {
+                            targetRotation = Math.PI / 2; // Right
+                        } else if (keyState.ArrowDown) {
+                            targetRotation = Math.PI; // Down
+                        } else if (keyState.ArrowLeft) {
+                            targetRotation = -Math.PI / 2; // Left
+                        }
+                    }       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
        // Generate all the Textures asynchronously
         // await spritesheet.parse();
 
