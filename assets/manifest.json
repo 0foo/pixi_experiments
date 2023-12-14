@@ -1,0 +1,13 @@
+{
+    "bundles": [
+        {
+            "name": "space_scene",
+            "assets": [
+                {
+                    "alias": "background",
+                    "src": "/assets/images/starfield-background-1.jpg"
+                }
+            ]
+        }
+    ]
+}

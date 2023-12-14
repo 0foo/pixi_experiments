@@ -4,127 +4,139 @@
         <script src="https://pixijs.download/release/pixi.js"></script>
       </head>
       <body>
-        <script type="module">
+        <script>
   
             const Container = PIXI.Container
             const Assets = PIXI.Assets
             const Sprite = PIXI.Sprite
-  
+            const Application = PIXI.Application
 
-            import { InitializeApp, Scene, ObjectManager, SceneManager } from '/js/Base.js';
-            import { Space } from '/js/scenes/Space.js'
-            const app = InitializeApp();
+
+            let app = new Application({ 
+              width: window.innerWidth,   // Use window dimensions or your own values
+              height: window.innerHeight
+             });
+            document.body.appendChild(app.view);
 
             (async () => {
                 try {
- 
+
+                    let manifest = await fetch('/assets/manifest.json')
+                        .then(response => response.json())
+                        .catch(error => {
+                            console.error('Error loading JSON:', error);
+                        });
+
+                    await Assets.init({manifest});
+                    await Assets.loadBundle('space_scene');
+
+                    const background = Sprite.from('background');
+                    background.width = app.screen.width * 4;  
+                    background.height = app.screen.height * 4; 
+
+                    const world_container = new Container();
+                    world_container.addChild(background)
+                    app.stage.addChild(world_container);
+                    let camera = new PIXI.Container();
+                    app.stage.addChild(camera);
+
+                    const sheet = await PIXI.Assets.load('/assets/images/spaceship_art_pack_larger/blue/small_ship_blue/out.json')
+                    const ship = new PIXI.AnimatedSprite(sheet.animations.thrustors);
+                    ship.animationSpeed = 0.1666
+                    ship.play()
+                    ship.scale.set(.2, .2)
+                    camera.addChild(ship)
+                    ship.anchor.set(0.5);  // This ensures the sprite is centered based on its middle
+                    ship.x = app.renderer.width / 2;
+                    ship.y = app.renderer.height / 2;
+                    let currentRotation = 0;  // Current rotation of the sprite
+                    let targetRotation = 0;   // Target rotation to reach
+                    const rotationSpeed = 0.1; // Speed of rotation (adjust as needed)
+
+                    function updateTargetRotation() {
+                            if (keyState.ArrowUp && keyState.ArrowRight) {
+                            targetRotation = Math.PI / 4; // Up-Right
+                        } else if (keyState.ArrowUp && keyState.ArrowLeft) {
+                            targetRotation = -Math.PI / 4; // Up-Left
+                        } else if (keyState.ArrowDown && keyState.ArrowRight) {
+                            targetRotation = 3 * Math.PI / 4; // Down-Right
+                        } else if (keyState.ArrowDown && keyState.ArrowLeft) {
+                            targetRotation = -3 * Math.PI / 4; // Down-Left
+                        } else if (keyState.ArrowUp) {
+                            targetRotation = 0; // Up
+                        } else if (keyState.ArrowRight) {
+                            targetRotation = Math.PI / 2; // Right
+                        } else if (keyState.ArrowDown) {
+                            targetRotation = Math.PI; // Down
+                        } else if (keyState.ArrowLeft) {
+                            targetRotation = -Math.PI / 2; // Left
+                        }
+                    }
+
+
+                    // is this mask needed? It works without it.
+                    // Optional: Create a mask for the camera
+                    // let mask = new PIXI.Graphics();
+                    // mask.beginFill(0xffffff);
+                    // mask.drawRect(0, 0, app.screen.width, app.screen.height);
+                    // mask.endFill();
+
+                    // camera.mask = mask;
+                    // app.stage.addChild(mask);
+
+
+
+                    // define a boundary to prevent the camera from going outside of the bounds of the world_container
+                let boundary = {
+                        left: 0,
+                        right: background.width - app.screen.width,
+                        top: 0,
+                        bottom: background.height - app.screen.height
+                    };
+
+                    let keyState = {};
+
+
+                    // handle all key presses
+                    function onKeyDown(e) {
+                        keyState[e.code] = true;
+                        updateTargetRotation();
+                    }
+
+                    function onKeyUp(e) {
+                        keyState[e.code] = false;
+                        updateTargetRotation();
+                    }
+
+
+
+
+                window.addEventListener("keydown", onKeyDown);
+
+                window.addEventListener("keyup", onKeyUp);
+                    app.ticker.add(() => {
+                    let delta = ((targetRotation - currentRotation + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
+
+                    if (Math.abs(delta) > 0.01) {
+                        currentRotation += delta * rotationSpeed;
+                        ship.rotation = currentRotation;
+                    }
+
+                    if (keyState["ArrowUp"]) {
+                        world_container.y = Math.min(world_container.y + 5, boundary.top);
+                    }
+                    if (keyState["ArrowDown"]) {
+                        world_container.y = Math.max(world_container.y - 5, -boundary.bottom);
+                    }
+                    if (keyState["ArrowLeft"]) {
+                        world_container.x = Math.min(world_container.x + 5, boundary.left);
+                    }
+                    if (keyState["ArrowRight"]) {
+                        world_container.x = Math.max(world_container.x - 5, -boundary.right);
+                    }
+                    });
+
                     
-                    const space_scene = new Space()
-                    await space_scene.enter(app)
-
-
-
-
-            //       const sheet = await PIXI.Assets.load('/assets/spaceship_art_pack_larger/blue/small_ship_blue/out.json')
-            //       const ship = new PIXI.AnimatedSprite(sheet.animations.thrustors);
-            //       ship.animationSpeed = 0.1666
-            //       ship.play()
-            //       ship.scale.set(.2, .2)
-            //       camera.addChild(ship)
-            //       ship.anchor.set(0.5);  // This ensures the sprite is centered based on its middle
-            //       ship.x = app.renderer.width / 2;
-            //       ship.y = app.renderer.height / 2;
-            //       let currentRotation = 0;  // Current rotation of the sprite
-            //       let targetRotation = 0;   // Target rotation to reach
-            //       const rotationSpeed = 0.1; // Speed of rotation (adjust as needed)
-
-            //       function updateTargetRotation() {
-            //           if (keyState.ArrowUp && keyState.ArrowRight) {
-            //               targetRotation = Math.PI / 4; // Up-Right
-            //           } else if (keyState.ArrowUp && keyState.ArrowLeft) {
-            //               targetRotation = -Math.PI / 4; // Up-Left
-            //           } else if (keyState.ArrowDown && keyState.ArrowRight) {
-            //               targetRotation = 3 * Math.PI / 4; // Down-Right
-            //           } else if (keyState.ArrowDown && keyState.ArrowLeft) {
-            //               targetRotation = -3 * Math.PI / 4; // Down-Left
-            //           } else if (keyState.ArrowUp) {
-            //               targetRotation = 0; // Up
-            //           } else if (keyState.ArrowRight) {
-            //               targetRotation = Math.PI / 2; // Right
-            //           } else if (keyState.ArrowDown) {
-            //               targetRotation = Math.PI; // Down
-            //           } else if (keyState.ArrowLeft) {
-            //               targetRotation = -Math.PI / 2; // Left
-            //           }
-            //       }
-
-
-            //     // is this mask needed? It works without it.
-            //     // Optional: Create a mask for the camera
-            //     // let mask = new PIXI.Graphics();
-            //     // mask.beginFill(0xffffff);
-            //     // mask.drawRect(0, 0, app.screen.width, app.screen.height);
-            //     // mask.endFill();
-
-            //     // camera.mask = mask;
-            //     // app.stage.addChild(mask);
-
-
-
-            //     // define a boundary to prevent the camera from going outside of the bounds of the world_container
-            //   let boundary = {
-            //         left: 0,
-            //         right: background.width - app.screen.width,
-            //         top: 0,
-            //         bottom: background.height - app.screen.height
-            //     };
-
-            //     let keyState = {};
-
-
-            //     // handle all key presses
-            //     function onKeyDown(e) {
-            //           keyState[e.code] = true;
-            //           updateTargetRotation();
-            //     }
-
-            //     function onKeyUp(e) {
-            //         keyState[e.code] = false;
-            //         updateTargetRotation();
-            //     }
-
-
-
-
-            //   window.addEventListener("keydown", onKeyDown);
-
-            //   window.addEventListener("keyup", onKeyUp);
-
-
-
-            //     app.ticker.add(() => {
-            //       let delta = ((targetRotation - currentRotation + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
-
-            //       if (Math.abs(delta) > 0.01) {
-            //           currentRotation += delta * rotationSpeed;
-            //           ship.rotation = currentRotation;
-            //       }
-
-            //       if (keyState["ArrowUp"]) {
-            //           world_container.y = Math.min(world_container.y + 5, boundary.top);
-            //       }
-            //       if (keyState["ArrowDown"]) {
-            //           world_container.y = Math.max(world_container.y - 5, -boundary.bottom);
-            //       }
-            //       if (keyState["ArrowLeft"]) {
-            //           world_container.x = Math.min(world_container.x + 5, boundary.left);
-            //       }
-            //       if (keyState["ArrowRight"]) {
-            //           world_container.x = Math.max(world_container.x - 5, -boundary.right);
-            //       }
-            //     });
-
-                  
 
                 } 
                 catch(err) {
