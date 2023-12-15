@@ -27,15 +27,6 @@ class GameManager {
         }
         // return this
     }
-
-    update() {
-        // this.app.ticker.add(() => {
-        //     this.scene.update();
-        //     this.player.update();
-        // });
-
-        
-    }
 }
 
 

@@ -5,10 +5,10 @@
       </head>
       <body>
         <script type="module">
-            import { GameManager } from '/GameManager.js';
-            import { SpaceScene } from '/SpaceScene.js';
-            import { Player } from '/Player.js';
-            import { Keys } from '/Keys.js';
+            import { GameManager } from '/classes/GameManager.js';
+            import { SpaceScene } from '/classes/SpaceScene.js';
+            import { Player } from '/classes/Player.js';
+            import { Keys } from '/classes/Keys.js';
 
 
             // setup a keyboard manager
@@ -23,12 +23,12 @@
             (async () => {
                 try {
 
-                    let player = new Player()
+                    window.player = new Player()
                     await player.load_assets()
                     player.initialize()
                     player.update()
 
-                    let space_scene = new SpaceScene()
+                    window.space_scene = new SpaceScene()
                     await space_scene.load_assets()
                     space_scene.initialize()
                     space_scene.update()

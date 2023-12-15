@@ -3,10 +3,11 @@ class Keys{
         this.keyState={};
         window.addEventListener("keydown", (e) => {
             this.keyState[e.code] = true;
+            // console.log(e.code)
         });
 
         window.addEventListener("keyup", (e) =>{
-            this.keyState[e.code] = false;
+            delete this.keyState[e.code];
         });
     }
 }

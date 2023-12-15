@@ -1,11 +1,6 @@
-class Player {
+class Bullet {
     constructor(){
-        this.currentRotation = 0;  // Current rotation of the sprite
-        this.targetRotation = 0;   // Target rotation to reach
-        this.rotationSpeed = 0.1; // Speed of rotation (adjust as needed)
-        this.ship=null;
-        this.camera=null;
-        this.keyState = window.key_manager.keyState;
+        location = 'assets/images/spaceship_art_pack_larger/blue/bullet.png'
     }
 
     async load_assets(){
@@ -34,7 +29,6 @@ class Player {
         this.camera = camera;
 
         //setup key bindings
-
         window.addEventListener("keydown", () => {
             this.updateTargetRotation();
         });
