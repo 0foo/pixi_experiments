@@ -7,7 +7,7 @@
         <script type="module">
             import { GameManager } from '/classes/GameManager.js';
             import { SpaceScene } from '/classes/SpaceScene.js';
-            import { Player } from '/classes/Player.js';
+            // import { Player } from '/classes/Player.js';
             import { Keys } from '/classes/Keys.js';
 
 
@@ -23,15 +23,16 @@
             (async () => {
                 try {
 
-                    window.player = new Player()
-                    await player.load_assets()
-                    player.initialize()
-                    player.update()
-
                     window.space_scene = new SpaceScene()
                     await space_scene.load_assets()
                     space_scene.initialize()
                     space_scene.update()
+
+
+                    // window.player = new Player()
+                    // await player.load_assets()
+                    // player.initialize()
+                    // player.update()
 
 
                 } 

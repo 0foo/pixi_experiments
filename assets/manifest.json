@@ -6,6 +6,10 @@
                 {
                     "alias": "background",
                     "src": "/assets/images/starfield-background-1.jpg"
+                },
+                {
+                    "alias":"spacebomb",
+                    "src": "/assets/images/spaceship_art_pack_larger/blue/spacebombs/out.json"
                 }
             ]
         },
