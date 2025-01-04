@@ -24,22 +24,19 @@ export class Bullet {
     }
 }
 
-export class PlayerControl {
-    constructor() {
-        this.keys = {};
-    }
-}
-
 export class Movement {
-    constructor(speed, acceleration, maxSpeed) {
+    constructor(speed, acceleration, deceleration, maxSpeed, direction = 0) {
         this.speed = speed;
         this.acceleration = acceleration;
+        this.deceleration = deceleration;
         this.maxSpeed = maxSpeed;
+        this.direction = direction;
     }
 }
 
 export class Rotation {
-    constructor(angle = 0) {
+    constructor(speed, angle = 0 ) {
+        this.speed = speed;
         this.angle = angle;
     }
 }

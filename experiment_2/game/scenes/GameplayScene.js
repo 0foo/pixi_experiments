@@ -1,4 +1,4 @@
-import { MovementSystem, RenderingSystem } from '/engine/ECS.js';
+import { MovementSystem, RenderingSystem, PlayerControlSystem } from '/engine/ECS.js';
 import { BaseScene, app } from '/engine/Illusionist.js';
 import { Stars, PIXI } from '/engine/Illusionist.js';
 import { PlayerFactory } from '/game/objects/PlayerFactory.js';
@@ -14,7 +14,7 @@ export class GameplayScene extends BaseScene {
     Stars.generateStars(this, 10000);
 
     // player creation
-    this.player = new PlayerFactory(this).createPlayer()
+    this.player = new PlayerFactory(this).createPlayer(4000, 4000)
     this.entities.push(this.player); // Add player's entity to the entities list
   }
 
@@ -24,6 +24,7 @@ export class GameplayScene extends BaseScene {
 
   initSystems(){
     // setup systems
+    this.systems.push(new PlayerControlSystem());
     this.systems.push(new MovementSystem(this));
     this.systems.push(new RenderingSystem());
   }

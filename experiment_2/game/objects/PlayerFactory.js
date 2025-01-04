@@ -7,13 +7,11 @@ export class PlayerFactory {
         this.scene = scene;
     }
 
-    createPlayer() {
+    createPlayer(start_x, start_y) {
         const player = new Entity();
-        let start_width = window.innerWidth / 2
-        let start_height = window.innerHeight / 2
-        player.addComponent(new Position(start_width, start_height));
-        player.addComponent(new Rotation(0));
-        player.addComponent(new Movement(0, .001, null));
+        player.addComponent(new Position(start_x, start_y));
+        player.addComponent(new Rotation(.1, 0));
+        player.addComponent(new Movement(0, 5, 2, 100));
         // // player.addComponent(new PlayerControlSystem());
         const triangle = new PIXI.Graphics();
         triangle.poly([
@@ -26,6 +24,7 @@ export class PlayerFactory {
         this.scene.addChild(
             player.getComponent(Renderable).graphic
         )
+        player.addLabel("player")
         return player;
     }
 }

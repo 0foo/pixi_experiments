@@ -10,27 +10,19 @@ export class MovementSystem {
             const position = entity.getComponent(Position);
             const movement = entity.getComponent(Movement);
             const rotation = entity.getComponent(Rotation);
-            // console.log(position.x, position.y)
 
             // Ensure the entity has the required components
             if (position && movement && rotation) {
-                // Apply movement based on the rotation angle
-                position.x += Math.sin(rotation.angle) * movement.speed;
-                position.y -= Math.cos(rotation.angle) * movement.speed;
-                console.log(position.x, position.y)
-
-                // Adjust speed based on acceleration
-                if (movement.maxSpeed) {
-                    movement.speed = Math.min(movement.speed + movement.acceleration, movement.maxSpeed);
-                }
-                else{
-                    movement.speed = movement.speed + movement.acceleration ;
-                }
-
-                // Clamp position within the scene boundaries
+                this.applyMovement(position, rotation, movement);
                 this.clampPosition(position);
             }
         }
+    }
+
+    applyMovement(position, rotation, movement) {
+        // Apply movement based on the rotation angle
+        position.x += Math.sin(rotation.angle) * movement.speed;
+        position.y -= Math.cos(rotation.angle) * movement.speed;
     }
 
     clampPosition(position) {
@@ -41,19 +33,81 @@ export class MovementSystem {
 }
 
 
+export class PlayerControlSystem {
+    constructor() {
+        this.keys = {}; // Object to track the state of keys
+
+        // Bind key event listeners
+        document.addEventListener("keydown", this.handleKeyDown.bind(this));
+        document.addEventListener("keyup", this.handleKeyUp.bind(this));
+    }
+
+    handleKeyDown(event) {
+        this.keys[event.key] = true;
+    }
+
+    handleKeyUp(event) {
+        this.keys[event.key] = false;
+    }
+
+    update(entities, delta) {
+        for (const entity of entities) {
+            if (!entity.hasLabel("player")) continue;
+
+            const rotation = entity.getComponent(Rotation);
+            const movement = entity.getComponent(Movement);
+
+            // Ensure the entity has required components
+            if (!rotation || !movement) continue;
+
+            this.handleRotation(rotation);
+            this.handleSpeed(movement);
+            break; // Assuming one player entity per frame
+        }
+    }
+
+    handleRotation(rotation) {
+        if (this.keys["ArrowLeft"]) {
+            rotation.angle -= rotation.speed; // Rotate counterclockwise
+        }
+        if (this.keys["ArrowRight"]) {
+            rotation.angle += rotation.speed; // Rotate clockwise
+        }
+    }
+
+    handleSpeed(movement) {
+        if (this.keys["ArrowUp"]) {
+            movement.speed = Math.min(movement.speed + movement.acceleration, movement.maxSpeed);
+        } else {
+            movement.speed = Math.max(movement.speed - movement.deceleration, 0); // Gradual deceleration
+        }
+    }
+}
+
+
 export class RenderingSystem {
     update(entities, delta) {
         for (const entity of entities) {
-            if (entity.hasComponent(Position) && entity.hasComponent(Renderable)) {
+            if (
+                entity.hasComponent(Position) &&
+                entity.hasComponent(Renderable) &&
+                entity.hasComponent(Rotation)
+            ) {
                 const position = entity.getComponent(Position);
                 const renderable = entity.getComponent(Renderable);
+                const rotation = entity.getComponent(Rotation);
 
+                // Update position
                 renderable.graphic.x = position.x;
                 renderable.graphic.y = position.y;
+
+                // Update rotation
+                renderable.graphic.rotation = rotation.angle;
             }
         }
     }
 }
+
 
 
 
@@ -91,36 +145,38 @@ export class RenderingSystem {
 // export class PlayerControlSystem {
 //     update(entities, delta) {
 //         for (const entity of entities) {
-//             const position = entity.getComponent(Position);
-//             const rotation = entity.getComponent(Rotation);
-//             const movement = entity.getComponent(Movement);
-//             const control = entity.getComponent(PlayerControl);
+            
+//             if(entity.hasLabel("player")) {
+//                 const position = entity.getComponent(Position);
+//                 const rotation = entity.getComponent(Rotation);
+//                 const movement = entity.getComponent(Movement);
 
-//             // Ensure the entity has all required components
-//             if (position && rotation && movement && control) {
-//                 // Handle rotation
-//                 if (control.keys["ArrowLeft"]) {
-//                     rotation.angle -= 0.05; // Rotate counterclockwise
-//                 }
-//                 if (control.keys["ArrowRight"]) {
-//                     rotation.angle += 0.05; // Rotate clockwise
-//                 }
+//                 // Ensure the entity has all required components
+//                 if (position && rotation && movement && control) {
+//                     // Handle rotation
+//                     if (control.keys["ArrowLeft"]) {
+//                         rotation.angle -= 0.05; // Rotate counterclockwise
+//                     }
+//                     if (control.keys["ArrowRight"]) {
+//                         rotation.angle += 0.05; // Rotate clockwise
+//                     }
 
-//                 // Handle movement
-//                 if (control.keys["ArrowUp"]) {
-//                     movement.speed = Math.min(movement.speed + movement.acceleration, movement.maxSpeed);
-//                 } else {
-//                     movement.speed = Math.max(movement.speed - movement.acceleration * 0.5, 0); // Slow down gradually
-//                 }
+//                     // Handle movement
+//                     if (control.keys["ArrowUp"]) {
+//                         movement.speed = Math.min(movement.speed + movement.acceleration, movement.maxSpeed);
+//                     } else {
+//                         movement.speed = Math.max(movement.speed - movement.acceleration * 0.5, 0); // Slow down gradually
+//                     }
 
-//                 // Update position based on rotation and speed
-//                 position.x += Math.sin(rotation.angle) * movement.speed;
-//                 position.y -= Math.cos(rotation.angle) * movement.speed;
+//                     // Update position based on rotation and speed
+//                     position.x += Math.sin(rotation.angle) * movement.speed;
+//                     position.y -= Math.cos(rotation.angle) * movement.speed;
+//                 }
+//                 return;
 //             }
 //         }
 //     }
 // }
-
 
 
 

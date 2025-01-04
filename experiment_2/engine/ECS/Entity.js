@@ -1,6 +1,7 @@
 export class Entity {
   constructor() {
       this.components = new Map();
+      this.labels = []
   }
 
   addComponent(component) {
@@ -13,5 +14,13 @@ export class Entity {
 
   hasComponent(componentClass) {
       return this.components.has(componentClass);
+  }
+
+  addLabel(label){
+    this.labels.push(label)
+  }
+
+  hasLabel(label){
+    return this.labels.includes(label)
   }
 }
