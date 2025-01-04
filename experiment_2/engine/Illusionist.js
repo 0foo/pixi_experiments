@@ -4,8 +4,7 @@ import { SceneManager } from './Scene/SceneManager.js';
 import * as Shapes from './Utils/shapes.js';
 import * as Utils from './Utils/utils.js';
 import * as Stars from './Utils/stars.js';
-import * as Entity from './ECS/Entity.js';
-import * as System from './ECS/System.js'
+
 
 
 
@@ -42,4 +41,11 @@ export const worldWidth = window.innerWidth;
 export const worldHeight = window.innerHeight;
 
 // Engine Exports
-export { PIXI, BaseScene, SceneManager, Shapes, Utils, Stars, Entity, System };
+export { 
+  PIXI, 
+  BaseScene, 
+  SceneManager, 
+  Shapes, 
+  Utils, 
+  Stars
+};

@@ -7,6 +7,11 @@ export class BaseScene extends PIXI.Container {
    */
   constructor() {
     super();
+    this.maxWidth = null;
+    this.maxHeight = null;
+    this.entities = []; // List of all entities in the scene
+    this.systems = [];  // List of all systems
+    this.initSystems();
   }
 
   /**
@@ -14,10 +19,11 @@ export class BaseScene extends PIXI.Container {
    * @param {number} width - The width of the scene.
    * @param {number} height - The height of the scene.
    * Defaults to screen size if false or null provided
+   * Note: will still expand past this 
    */
   setSize(width, height) {   
-    this.width = width
-    this.height = height
+    this.maxWidth = width
+    this.maxHeight = height
     this.background = null; // Placeholder for background graphic
 
     // If there's a background, remove it and redefine the bounds
@@ -34,7 +40,6 @@ export class BaseScene extends PIXI.Container {
     // console.log(this.width); // Should return the rectangle bounds
    }
 
-
   /**
    * Called when the scene is entered.
    * @param {SceneManager} sceneManager - The Scene Manager instance.
@@ -43,6 +48,11 @@ export class BaseScene extends PIXI.Container {
     this.sceneManager = sceneManager;
     console.log('Entered scene:', this.constructor.name);
   }
+
+  /*
+  override and init systems in your child class
+  */
+  initSystems(){}
 
   /**
    * To be used by subclasses.
@@ -58,9 +68,19 @@ export class BaseScene extends PIXI.Container {
     console.log('Exited scene:', this.constructor.name);
   }
 
+  // overwrite this with child class
+  onUpdate(){}
+
   /**
    * Called every frame during the game loop.
    * @param {number} delta - The delta time from the game loop.
    */
-  update(delta) {}
+
+  update(delta) {
+    for (const system of this.systems) {
+      system.update(this.entities, delta);
+    }
+    this.onUpdate(delta);
+  }
+  
 }

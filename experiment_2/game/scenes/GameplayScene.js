@@ -1,28 +1,38 @@
-import { BaseScene } from '/engine/Illusionist.js';
-import { Stars, PIXI, app } from '/engine/Illusionist.js';
-import { Player } from '/game/objects/Player.js'
+import { MovementSystem, RenderingSystem } from '/engine/ECS.js';
+import { BaseScene, app } from '/engine/Illusionist.js';
+import { Stars, PIXI } from '/engine/Illusionist.js';
+import { PlayerFactory } from '/game/objects/PlayerFactory.js';
+import { Renderable, Position } from '/engine/ECS.js';
 
 
 export class GameplayScene extends BaseScene {
+
 
   onEnter() {
     //console.log(Math.round(Math.random() * 10000))
     this.setSize(8000, 8000)
     Stars.generateStars(this, 10000);
-    this.player = new Player(this)
-    this.addChild(this.player)
-  }
 
+    // player creation
+    this.player = new PlayerFactory(this).createPlayer()
+    this.entities.push(this.player); // Add player's entity to the entities list
+  }
 
   onExit() {
     console.log("Exiting Gameplay Scene")
   }
 
-  update(delta){
-    this.player.update(delta)
+  initSystems(){
+    // setup systems
+    this.systems.push(new MovementSystem(this));
+    this.systems.push(new RenderingSystem());
+  }
+
+  onUpdate(delta) {
+    // this.player.update(delta)
     // Update the camera to follow the player
-    this.pivot.x = Math.max(0, Math.min(this.player.x - app.renderer.screen.width / 2, this.width - app.renderer.screen.width));
-    this.pivot.y = Math.max(0, Math.min(this.player.y - app.renderer.screen.height / 2, this.height - app.renderer.screen.height));
+    this.pivot.x = Math.max(0, Math.min(this.player.getComponent(Position).x - app.renderer.screen.width / 2, this.width - app.renderer.screen.width));
+    this.pivot.y = Math.max(0, Math.min(this.player.getComponent(Position).y - app.renderer.screen.height / 2, this.height - app.renderer.screen.height));
   }
 
 }
