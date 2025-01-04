@@ -1,4 +1,4 @@
-import { MovementSystem, RenderingSystem, PlayerControlSystem } from '/engine/ECS.js';
+import { MovementSystem, RenderingSystem, PlayerControlSystem, PhysicsSystem } from '/engine/ECS.js';
 import { BaseScene, app } from '/engine/Illusionist.js';
 import { Stars, PIXI } from '/engine/Illusionist.js';
 import { PlayerFactory } from '/game/objects/PlayerFactory.js';
@@ -25,8 +25,8 @@ export class GameplayScene extends BaseScene {
   initSystems(){
     // setup systems
     this.systems.push(new PlayerControlSystem());
-    this.systems.push(new MovementSystem(this));
     this.systems.push(new RenderingSystem());
+    this.systems.push(new PhysicsSystem(this, .98));
   }
 
   onUpdate(delta) {
@@ -37,3 +37,4 @@ export class GameplayScene extends BaseScene {
   }
 
 }
+//    this.systems.push(new MovementSystem(this));

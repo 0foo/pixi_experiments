@@ -5,13 +5,6 @@ export class Position {
     }
 }
 
-export class Velocity {
-    constructor(vx = 0, vy = 0) {
-        this.vx = vx;
-        this.vy = vy;
-    }
-}
-
 export class Renderable {
     constructor(graphic) {
         this.graphic = graphic;
@@ -30,7 +23,12 @@ export class Movement {
         this.acceleration = acceleration;
         this.deceleration = deceleration;
         this.maxSpeed = maxSpeed;
-        this.direction = direction;
+    }
+}
+
+export class Acceleration {
+    constructor(acceleration) {
+        this.go = acceleration;
     }
 }
 
@@ -38,6 +36,13 @@ export class Rotation {
     constructor(speed, angle = 0 ) {
         this.speed = speed;
         this.angle = angle;
+    }
+}
+
+export class Velocity {
+    constructor(vx = 0, vy = 0) {
+        this.vx = vx; // Velocity along the x-axis
+        this.vy = vy; // Velocity along the y-axis
     }
 }
 

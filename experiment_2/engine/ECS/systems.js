@@ -1,4 +1,5 @@
-import {Position, Movement, Rotation, Renderable } from '/engine/ECS.js'
+import {Position, Movement, Rotation, Renderable, Velocity, Acceleration } from '/engine/ECS.js'
+
 
 export class MovementSystem {
     constructor(scene) {
@@ -20,9 +21,11 @@ export class MovementSystem {
     }
 
     applyMovement(position, rotation, movement) {
-        // Apply movement based on the rotation angle
-        position.x += Math.sin(rotation.angle) * movement.speed;
-        position.y -= Math.cos(rotation.angle) * movement.speed;
+        // Move only if speed is greater than 0
+        if (movement.speed > 0) {
+            position.x += Math.sin(rotation.angle) * movement.speed;
+            position.y -= Math.cos(rotation.angle) * movement.speed;
+        }
     }
 
     clampPosition(position) {
@@ -32,10 +35,9 @@ export class MovementSystem {
     }
 }
 
-
 export class PlayerControlSystem {
     constructor() {
-        this.keys = {}; // Object to track the state of keys
+        this.keys = {}; // Track key states
 
         // Bind key event listeners
         document.addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -55,14 +57,14 @@ export class PlayerControlSystem {
             if (!entity.hasLabel("player")) continue;
 
             const rotation = entity.getComponent(Rotation);
-            const movement = entity.getComponent(Movement);
+            const velocity = entity.getComponent(Velocity);
+            const acceleration = entity.getComponent(Acceleration);
 
-            // Ensure the entity has required components
-            if (!rotation || !movement) continue;
+
+            if (!rotation || !velocity || !acceleration) continue;
 
             this.handleRotation(rotation);
-            this.handleSpeed(movement);
-            break; // Assuming one player entity per frame
+            this.handleAcceleration(velocity, rotation, acceleration);
         }
     }
 
@@ -75,11 +77,10 @@ export class PlayerControlSystem {
         }
     }
 
-    handleSpeed(movement) {
+    handleAcceleration(velocity, rotation, acceleration) {
         if (this.keys["ArrowUp"]) {
-            movement.speed = Math.min(movement.speed + movement.acceleration, movement.maxSpeed);
-        } else {
-            movement.speed = Math.max(movement.speed - movement.deceleration, 0); // Gradual deceleration
+            velocity.vx += Math.sin(rotation.angle) * acceleration.go;
+            velocity.vy -= Math.cos(rotation.angle) * acceleration.go;
         }
     }
 }
@@ -101,12 +102,51 @@ export class RenderingSystem {
                 renderable.graphic.x = position.x;
                 renderable.graphic.y = position.y;
 
-                // Update rotation
+                // Update rotation (independent of movement)
                 renderable.graphic.rotation = rotation.angle;
             }
         }
     }
 }
+
+export class PhysicsSystem {
+    constructor(scene, friction=0.98) {
+        this.scene = scene; // Scene boundaries for clamping
+        this.friction = friction
+    }
+
+    update(entities, delta) {
+        for (const entity of entities) {
+            const position = entity.getComponent(Position);
+            const velocity = entity.getComponent(Velocity);
+
+            if (!position || !velocity) continue;
+
+            this.applyVelocity(position, velocity);
+            this.applyFriction(velocity);
+            this.clampPosition(position);
+        }
+    }
+
+    applyVelocity(position, velocity) {
+        // Update position based on velocity
+        position.x += velocity.vx;
+        position.y += velocity.vy;
+    }
+
+    applyFriction(velocity) {
+        // Apply friction to slow down over time
+        velocity.vx *= this.friction;
+        velocity.vy *= this.friction;
+    }
+
+    clampPosition(position) {
+        // Ensure the entity stays within the scene boundaries
+        position.x = Math.max(0, Math.min(position.x, this.scene.maxWidth));
+        position.y = Math.max(0, Math.min(position.y, this.scene.maxHeight));
+    }
+}
+
 
 
 
