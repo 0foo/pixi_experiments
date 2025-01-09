@@ -1,40 +1,6 @@
 import {Position, Movement, Rotation, Renderable, Velocity, Acceleration } from '/engine/ECS.js'
 
 
-export class MovementSystem {
-    constructor(scene) {
-        this.scene = scene; // Reference to the scene for boundary clamping
-    }
-
-    update(entities, delta) {
-        for (const entity of entities) {
-            const position = entity.getComponent(Position);
-            const movement = entity.getComponent(Movement);
-            const rotation = entity.getComponent(Rotation);
-
-            // Ensure the entity has the required components
-            if (position && movement && rotation) {
-                this.applyMovement(position, rotation, movement);
-                this.clampPosition(position);
-            }
-        }
-    }
-
-    applyMovement(position, rotation, movement) {
-        // Move only if speed is greater than 0
-        if (movement.speed > 0) {
-            position.x += Math.sin(rotation.angle) * movement.speed;
-            position.y -= Math.cos(rotation.angle) * movement.speed;
-        }
-    }
-
-    clampPosition(position) {
-        // Clamp the position to the scene boundaries
-        position.x = Math.max(0, Math.min(position.x, this.scene.maxWidth));
-        position.y = Math.max(0, Math.min(position.y, this.scene.maxHeight));
-    }
-}
-
 export class PlayerControlSystem {
     constructor() {
         this.keys = {}; // Track key states
