@@ -17,21 +17,13 @@ export class GameplayScene extends BaseScene {
 
     // player creation
     this.player = new PlayerFactory().createPlayer(500, 500)
-    let asteroid = new AsteroidFactory().createRandomAsteroidGraphic()
-    asteroid.x = 500
-    asteroid.y = 500
+    let asteroid = new AsteroidFactory().createAsteroid(400,400)
+    
 
+    // add entity and graphics to scene/container
+    this.addEntity(this.player, this.player.getComponent(Renderable).graphic, )
+    this.addEntity(asteroid, asteroid.getComponent(Renderable).graphic)
 
-    // add grphics
-    this.addChild(
-      this.player.getComponent(Renderable).graphic,
-      asteroid
-      // asteroid.getComponent(Renderable).graphic
-    )
-
-    // add entities
-    this.entities.push(this.player); // Add player's entity to the entities list
-    // this.entities.push(asteroid)
   }
 
   onExit() {
@@ -41,21 +33,15 @@ export class GameplayScene extends BaseScene {
   initSystems(){
     // setup systems
     this.systems.push(new PlayerControlSystem());
+    this.systems.push(new RotationSystem());
     this.systems.push(new RenderingSystem());
     this.systems.push(new PhysicsSystem(this, .98));
   }
 
   onUpdate(delta) {
 
-    // this.player.update(delta)
-    // Update the camera to follow the player
-    console.log(
-      this.player.getComponent(Position).x, 
-      this.player.getComponent(Position).y
-    )
     this.pivot.x = Math.max(0, Math.min(this.player.getComponent(Position).x - app.renderer.screen.width / 2, this.width - app.renderer.screen.width));
     this.pivot.y = Math.max(0, Math.min(this.player.getComponent(Position).y - app.renderer.screen.height / 2, this.height - app.renderer.screen.height));
   }
 
 }
-//    this.systems.push(new MovementSystem(this));

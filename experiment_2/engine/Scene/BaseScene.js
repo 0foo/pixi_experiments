@@ -76,6 +76,12 @@ export class BaseScene extends PIXI.Container {
    * @param {number} delta - The delta time from the game loop.
    */
 
+  addEntity(entity, graphic){
+    this.addChild(graphic)
+    this.entities.push(entity)
+
+  }
+
   update(delta) {
     for (const system of this.systems) {
       system.update(this.entities, delta);

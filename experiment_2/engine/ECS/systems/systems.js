@@ -51,25 +51,47 @@ export class PlayerControlSystem {
     }
 }
 
+export class RotationSystem {
+    update(entities, delta) {
+        for (const entity of entities) {
+            const rotation = entity.getComponent(Rotation);
+
+            if (!rotation) continue;
+
+            // Update rotation angle based on rotational velocity
+            if (rotation.rotationalVelocity !== undefined) {
+                rotation.angle += rotation.rotationalVelocity * delta;
+
+                // Keep the angle within [0, 2π] for consistency
+                if (rotation.angle < 0) {
+                    rotation.angle += Math.PI * 2;
+                }
+                if (rotation.angle >= Math.PI * 2) {
+                    rotation.angle -= Math.PI * 2;
+                }
+            }
+        }
+    }
+}
 
 export class RenderingSystem {
     update(entities, delta) {
         for (const entity of entities) {
-            if (
-                entity.hasComponent(Position) &&
-                entity.hasComponent(Renderable) &&
-                entity.hasComponent(Rotation)
-            ) {
-                const position = entity.getComponent(Position);
-                const renderable = entity.getComponent(Renderable);
-                const rotation = entity.getComponent(Rotation);
+            const position = entity.hasComponent(Position) ? entity.getComponent(Position) : null;
+            const renderable = entity.hasComponent(Renderable) ? entity.getComponent(Renderable) : null;
+            const rotation = entity.hasComponent(Rotation) ? entity.getComponent(Rotation) : null;
 
-                // Update position
-                renderable.graphic.x = position.x;
-                renderable.graphic.y = position.y;
+            if (renderable) {
+                // Update position if the Position component exists
+                if (position) {
+                    renderable.graphic.x = position.x;
+                    renderable.graphic.y = position.y;
+                }
 
-                // Update rotation (independent of movement)
-                renderable.graphic.rotation = rotation.angle;
+                // Update rotation if the Rotation component exists
+                if (rotation) {
+                    renderable.graphic.rotation = rotation.angle;
+                }
             }
         }
     }
